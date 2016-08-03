@@ -9,7 +9,7 @@ class Expr(object):
 
     calc_map = {
                     'ADD': add,
-                    'MULT': mul,
+                    'MUL': mul,
             }
 
     def __init__(self, expr):
