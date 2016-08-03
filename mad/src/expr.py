@@ -4,7 +4,6 @@ import re
 from operator import add, mul
 
 from token import Token
-from rule import Rule
 
 class Expr(object):
 
