@@ -2,7 +2,7 @@
 
 import os
 
-from expr import Expr
+from ast.expr import Expr
 
 class MadParser(object):
 
