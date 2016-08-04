@@ -35,6 +35,8 @@ class Token(object):
                     '-':    ADD,
                     '*':    MUL, 
                     '/':    MUL,
+                    '(':    LPAR,
+                    ')':    RPAR,
                     'EOF':  EOF,
                 }
 
@@ -91,6 +93,12 @@ class Token(object):
 
     def is_num(self):
         return self.type == Token.NUM
+
+    def is_left_parenthesis(self):
+        return self.type == Token.LPAR
+
+    def is_right_parenthesis(self):
+        return self.type == Token.RPAR
 
     def brain(self):
         if self.is_binary:

@@ -59,6 +59,12 @@ class Expr(object):
     def __p(self):
         if self.__next().is_num():
             self.__stack.push_operand(self.__consume().value)
+        elif self.__next().is_left_parenthesis():
+            self.__consume()
+            self.__stack.push_operator(Token('EOF'), no_pop=True)
+            self.__e()
+            self.__expect(Token(')'))
+            self.__stack.pop_operator(ignore=True)
         else:
             self.__error("Syntax Error")
 

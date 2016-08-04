@@ -22,7 +22,10 @@ class OpStack(object):
     def top_operand(self):
         return self.__operands[-1]
 
-    def pop_operator(self):
+    def pop_operator(self, ignore=False):
+        if ignore:
+            self.__operators.pop(-1)
+            return
         # Binary operation
         if self.top_operator().is_binary():
             # Get two operands
@@ -41,11 +44,12 @@ class OpStack(object):
             # Add result to operands
             self.__operands.append(op.brain(t0))
 
-    def push_operator(self, op):
-        # While there are operators with higher priority
-        # in the operator stack, compute them
-        while self.__operators[-1] > op:
-            self.pop_operator()
+    def push_operator(self, op, no_pop=False):
+        if not no_pop:
+            # While there are operators with higher priority
+            # in the operator stack, compute them
+            while self.__operators[-1] > op:
+                self.pop_operator()
         # Add operator to the stack
         self.__operators.append(op)
 
