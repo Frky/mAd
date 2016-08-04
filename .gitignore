@@ -89,3 +89,6 @@ ENV/
 .ropeproject
 
 mad/test/*.md
+
+# VIM swap files
+*.swp
