@@ -22,8 +22,7 @@ class UnitTest(object):
 
     def __ko(self, msg):
         self.__nb_tot += 1
-        if self.__verbose:
-            print "[ko] {0}".format(msg)
+        print "[ko] {0}".format(msg)
 
     def run(self):
         # Perform computation of test file
@@ -53,21 +52,35 @@ class MadTest(object):
         self.__nb_tot = 0
         self.__testdir = test_dir
 
-    def __ok(self, test_id="", verbose=True):
-        self.__nb_ok += 1
-        self.__nb_tot += 1
+    def __ok(self, test_id, ok, tot, verbose=True):
+        self.__nb_ok += ok
+        self.__nb_tot += tot
         if verbose:
-            print "[ok] {0}".format(test_id)
+            print "[ok] {2}: {0}/{1}".format(ok, tot, test_id)
 
-    def __ko(self, test_id, verbose=True):
-        self.__nb_ko += 1
-        self.__nb_tot += 1
+    def __ko(self, test_id, ok, tot, verbose=True):
+        self.__nb_ko += (tot - ok)
+        self.__nb_tot += tot
         if verbose:
-            print "[ko] {0}".format(test_id)
+            print "[ko] {2}: {0}/{1}".format(ok, tot, test_id)
 
     def run(self):
         for test in glob.glob("{0}/*.mad".format(self.__testdir)):
             # Get test file name without path and without extension
             test_name = os.path.splitext(os.path.basename(test))[0]
             # Run Unit Test
-            ok, tot = UnitTest(test_name, self.__testdir).run()
+            ok, tot = UnitTest(test_name, self.__testdir, verbose=False).run()
+            # Print test results
+            if ok != tot:
+                self.__ko(test_name, ok, tot)
+            else:
+                self.__ok(test_name, ok, tot)
+
+        # Print summary
+        print
+        if self.__nb_ok == self.__nb_tot:
+            print "[OK]",
+        else:
+            print "[KO]",
+        print " TOTAL: {0}/{1}".format(self.__nb_ok, self.__nb_tot)
+
