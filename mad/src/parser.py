@@ -38,9 +38,27 @@ class MadParser(object):
                 raise Exception
             verbose = True
             expr = expr[1:-1]
-        res = Expr(expr).eval()
+        # Variable definition?
+        if expr.count("=") == 1:
+            # Get variable name and value
+            var, expr = expr.split("=")
+            # Filter variable name
+            var = var.replace(" ", "")
+            # TODO
+            # Perform verifications on variable name
+            # ...
+            # Compute value 
+            val = Expr(expr, self.__vars).eval()
+            # Assign value to variable
+            self.__vars[var] = val
+        # If more than one "=": syntax error
+        elif expr.count("=") > 1:
+            # TODO explicit error
+            raise Exception
+        else:
+            val = Expr(expr, self.__vars).eval()
         if verbose:
-            return str(res)
+            return str(val)
         else:
             return ""
 

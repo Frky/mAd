@@ -7,10 +7,15 @@ from src.ast.opstack import OpStack
 
 class Expr(object):
 
-    def __init__(self, expr):
+    def __init__(self, expr, var_dict):
+        """
+            @param var_dict     dictionary of values for variables previously defined
+
+        """
         self.__expr = expr
         self.__stack = OpStack()
         self.__tokens = list()
+        self.__vars = var_dict
         self.__parse_tokens()
 
     def __parse_tokens(self):
@@ -18,8 +23,8 @@ class Expr(object):
             From input string, parse tokens
 
         """
-        split_expr = re.findall('[\d.]+|[%s]' % ''.join(Token.token_map), self.__expr)
-        self.__tokens = [Token(x) for x in split_expr]
+        split_expr = re.findall('[\d.]+|[%s]|[a-z]+' % ''.join(Token.token_map), self.__expr)
+        self.__tokens = [Token(x, self.__vars) for x in split_expr]
         self.__tokens.append(Token('EOF'))
 
     def __next(self):
@@ -66,7 +71,7 @@ class Expr(object):
             self.__expect(Token(')'))
             self.__stack.pop_operator(ignore=True)
         else:
-            self.__error("Syntax Error")
+            self.__error("Syntax Error: {0}".format(self.__next()))
 
     def __e(self):
         self.__p()

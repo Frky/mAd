@@ -46,9 +46,10 @@ class Token(object):
                 MUL: mul,
             }
 
-    def __init__(self, value):
+    def __init__(self, value, var_dict=None):
         self.__type = Token.token_map.get(value, Token.NUM)
         self.__value = value
+        self.__vars = var_dict
 
     @property
     def type(self):
@@ -57,7 +58,13 @@ class Token(object):
     @property
     def value(self):
         if self.type == Token.NUM:
-            return int(self.__value)
+            try:
+                return int(self.__value)
+            except ValueError:
+                try:
+                    return self.__vars[self.__value]
+                except KeyError:
+                    raise Exception
         else:
             return self.__value
 
