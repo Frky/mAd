@@ -3,6 +3,7 @@
 import re
 
 from src.ast.token import Token
+from src.ast.tree import Tree
 from src.ast.opstack import OpStack
 
 class Expr(object):
@@ -24,7 +25,7 @@ class Expr(object):
 
         """
         split_expr = re.findall('[\d.]+|[%s]|[a-z]+' % ''.join(Token.token_map), self.__expr)
-        self.__tokens = [Token(x, self.__vars) for x in split_expr]
+        self.__tokens = [Token(x) for x in split_expr]
         self.__tokens.append(Token('EOF'))
 
     def __next(self):
@@ -62,8 +63,8 @@ class Expr(object):
             return self.__error("Token expected ({0}) not found (next: {1})".format(tok, self.__next()))
 
     def __p(self):
-        if self.__next().is_num():
-            self.__stack.push_operand(self.__consume().value)
+        if self.__next().is_operand():
+            self.__stack.push_operand(Tree(self.__consume()))
         elif self.__next().is_left_parenthesis():
             self.__consume()
             self.__stack.push_operator(Token('EOF'), no_pop=True)
@@ -93,5 +94,5 @@ class Expr(object):
 
     def eval(self):
         # TODO handle errors (eg if int parsing fails)
-        return self.parse()
+        return self.parse().eval(self.__vars)
 

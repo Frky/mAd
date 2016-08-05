@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 
 from src.ast.token import Token
+from src.ast.tree import Tree
 
 class OpStack(object):
     """
@@ -34,7 +35,8 @@ class OpStack(object):
             # Get operator
             op = self.__operators.pop(-1)
             # Add result to operands
-            self.__operands.append(op.brain()(t0, t1))
+            self.__operands.append(Tree(op, t0, t1))
+            # op.brain()(t0, t1))
         # Unary operation
         else:
             # Get operand
@@ -42,7 +44,8 @@ class OpStack(object):
             # Get operator
             op = self.__operators.pop(-1)
             # Add result to operands
-            self.__operands.append(op.brain(t0))
+            self.__operands.append(Tree(op, t0))
+            # op.brain(t0))
 
     def push_operator(self, op, no_pop=False):
         if not no_pop:

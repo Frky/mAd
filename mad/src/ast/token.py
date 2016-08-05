@@ -10,6 +10,7 @@ class Token(object):
     RPAR = 3
     NUM = 4
     EOF = 5
+    VAR = 6
 
     # Binary operators
     binary = [
@@ -46,10 +47,15 @@ class Token(object):
                 MUL: mul,
             }
 
-    def __init__(self, value, var_dict=None):
-        self.__type = Token.token_map.get(value, Token.NUM)
+    def __init__(self, value):
+        self.__type = Token.token_map.get(value, None)
+        if self.__type is None:
+            try:
+                int(value)
+                self.__type = Token.NUM
+            except ValueError:
+                self.__type = Token.VAR
         self.__value = value
-        self.__vars = var_dict
 
     @property
     def type(self):
@@ -61,10 +67,7 @@ class Token(object):
             try:
                 return int(self.__value)
             except ValueError:
-                try:
-                    return self.__vars[self.__value]
-                except KeyError:
-                    raise Exception
+                raise Exception
         else:
             return self.__value
 
@@ -100,6 +103,12 @@ class Token(object):
 
     def is_num(self):
         return self.type == Token.NUM
+
+    def is_var(self):
+        return self.type == Token.VAR
+
+    def is_operand(self):
+        return self.type == Token.NUM or self.type == Token.VAR
 
     def is_left_parenthesis(self):
         return self.type == Token.LPAR
